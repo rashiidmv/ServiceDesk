@@ -1,0 +1,3 @@
+SELECT count(*) FROM sqlite_master WHERE type = 'table';
+SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';
+insert into customer_details (name,maximum_cane) values('hiba',1);

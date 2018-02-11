@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="2dp"
+
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="wds.servicedesk.NewCustomer"
+    tools:showIn="@layout/activity_new_customer">
+
+    <LinearLayout
+        android:layout_marginTop="3dp"
+        android:background="@drawable/curved_background_accent_shape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:nextFocusForward="@+id/addmobilenumber2"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addmobilenumber1"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:hint="Mobile1"
+                android:inputType="number"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:minWidth="110dp" />
+            <EditText
+                android:nextFocusForward="@+id/addmobilenumber3"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addmobilenumber2"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:hint="Mobile2"
+                android:inputType="number"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:minWidth="110dp" />
+            <EditText
+                android:nextFocusForward="@+id/addcustomername"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addmobilenumber3"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:hint="Mobile3"
+                android:inputType="number"
+                android:maxLength="10"
+                android:maxLines="1"
+                android:minWidth="110dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:nextFocusForward="@+id/addbuildingnumber"
+                android:minWidth="150dp"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addcustomername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Customer Name"
+                android:inputType="textPersonName|textCapWords"
+                android:maxLines="1" />
+            <EditText
+                android:nextFocusForward="@+id/addhousename"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addbuildingnumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="House#"
+                android:inputType="textCapCharacters"
+                android:maxLines="1" />
+
+            <EditText
+                android:nextFocusForward="@+id/addfloornumber"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addhousename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="House name"
+                android:inputType="textCapWords"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:nextFocusForward="@+id/adddooornumber"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addfloornumber"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp" />
+
+            <EditText
+                android:nextFocusForward="@+id/addcrossnumber"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/adddooornumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Door#"
+                android:inputType="textCapCharacters"
+                android:maxLines="1" />
+
+            <EditText
+                android:nextFocusForward="@+id/addmainnumber"
+                android:id="@+id/addcrossnumber"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Cross#"
+                android:inputType="textCapCharacters"
+                android:maxLines="1" />
+
+            <EditText
+                android:nextFocusForward="@+id/spinnerLocations"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addmainnumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Main#"
+                android:inputType="textCapCharacters"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:nextFocusForward="@+id/addlandmark"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/spinnerLocations"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp" />
+
+            <EditText
+                android:nextFocusForward="@+id/addnumberofcane"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addlandmark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Landmark"
+                android:inputType="textCapWords"
+                android:maxLines="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:nextFocusForward="@+id/spinnerBrandNames"
+                android:textColor="@color/colorAccent"
+                android:id="@+id/addnumberofcane"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp" />
+
+            <Spinner
+                android:textColor="@color/colorAccent"
+                android:id="@+id/spinnerBrandNames"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+        android:layout_marginTop="4dp"
+        android:id="@+id/show_customers_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
