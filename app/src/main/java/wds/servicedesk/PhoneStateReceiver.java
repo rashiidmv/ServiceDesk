@@ -83,19 +83,16 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                         e.printStackTrace();
                     }
                 } else if (statusCode == 2) {
+
                     Calendar calander = Calendar.getInstance();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-                    String time = simpleDateFormat.format(calander.getTime());
-                    Date dt = new Date();
-                    int hours = dt.getHours();
-                    int minutes = dt.getMinutes() + 20;
-                    int seconds = dt.getSeconds();
-                    String curTime = hours + ":" + minutes + ":" + seconds;
+                    calander.add(Calendar.MINUTE, 20);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+                    String curTime = simpleDateFormat.format(calander.getTime());
                     try {
                         SmsManager smsManager = SmsManager.getDefault();
                         smsManager.sendTextMessage("+91" + temp, null,
-                                "Hi Your order is confirmed.\n We will be delivering before " + curTime + " If you want to cancel Please call on 9620370920", null, null);
-                        //Toast.makeText(context, "SMS Sent!",Toast.LENGTH_LONG).show();
+                                "Hi, Your order is confirmed.\nWe will be delivering before " + curTime + " If you want to cancel Please call on 9620370920", null, null);
+                        Toast.makeText(context, "SMS Sent!",Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Toast.makeText(context, "G SMS failed, Check SMS tariff", Toast.LENGTH_LONG).show();
                         e.printStackTrace();

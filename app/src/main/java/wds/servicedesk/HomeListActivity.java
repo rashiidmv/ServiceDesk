@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -29,7 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import data.CustomerDataSource;
 import data.LoginDataSource;
@@ -167,18 +171,14 @@ public class HomeListActivity extends AppCompatActivity {
 //                    } else if (statusCode == 2) {    //Existing customer
 //
 //                        Calendar calander = Calendar.getInstance();
-//                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-//                        String time = simpleDateFormat.format(calander.getTime());
-//                        Date dt = new Date();
-//                        int hours = dt.getHours();
-//                        int minutes = dt.getMinutes() + 20;
-//                        int seconds = dt.getSeconds();
-//                        String curTime = hours + ":" + minutes + ":" + seconds;
+//                        calander.add(Calendar.MINUTE, 20);
+//                        SimpleDateFormat d=new SimpleDateFormat("HH:mm:ss a");
+//                        String curTime = d.format(calander);
 //                        try {
 //                            SmsManager smsManager = SmsManager.getDefault();
 //                            smsManager.sendTextMessage("+91" + temp, null,
-//                                    "Hi Your order is confirmed.\n We will be delivering before " + curTime + " If you want to cancel Please call on 9620370920", null, null);
-//                            //    Toast.makeText(context, "SMS Sent!",Toast.LENGTH_LONG).show();
+//                                    "Hi, Your order is confirmed.\nWe will be delivering before " + curTime + ". If you want to cancel Please call on 9620370920", null, null);
+//                                Toast.makeText(context, "SMS Sent!",Toast.LENGTH_LONG).show();
 //                        } catch (Exception e) {
 //                            Toast.makeText(context, "SMS failed, Check SMS tariff", Toast.LENGTH_LONG).show();
 //                            e.printStackTrace();
