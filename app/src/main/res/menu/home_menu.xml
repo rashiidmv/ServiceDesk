@@ -18,8 +18,11 @@
         android:icon="@android:drawable/ic_menu_today"
         app:showAsAction="collapseActionView"
         android:title="Todays Report" />
-    <item android:id="@+id/menu_settings"
+    <item
+        android:id="@+id/menu_settings"
         android:icon="@android:drawable/ic_partial_secure"
-        app:showAsAction="collapseActionView"
         android:title="Settings" />
+    <item
+        android:id="@+id/menu_export"
+        android:title="Export" />
 </menu>

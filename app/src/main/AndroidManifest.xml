@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.PROCESS_INCOMING_CALLS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +26,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
+
+            <meta-data
+                android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
             <meta-data
                 android:name="android.app.default_searchable"
@@ -46,7 +50,8 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="wds.servicedesk.HomeListActivity" />
-            <meta-data android:name="android.app.searchable"
+            <meta-data
+                android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
             <meta-data
                 android:name="android.app.default_searchable"
@@ -76,6 +81,10 @@
             android:name=".reports.TodaysReport"
             android:label="@string/title_activity_todays_report"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DataExportImport.Export"
+            android:label="@string/title_activity_export"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

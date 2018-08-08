@@ -39,6 +39,7 @@ import data.CustomerDataSource;
 import data.LoginDataSource;
 import data.MobileDataSource;
 import data.ServiceDeskDataSource;
+import wds.servicedesk.DataExportImport.Export;
 import wds.servicedesk.reports.TodaysReport;
 
 /**
@@ -663,6 +664,11 @@ public class HomeListActivity extends AppCompatActivity {
                 //  Intent settingsIntent = new Intent(this, Settings.class);
                 // startActivity(settingsIntent);
                 // showLoginScreen(todayReportIntent);
+                return true;
+            case R.id.menu_export:
+                  Intent exportIntent = new Intent(this, Export.class);
+                  //startActivity(exportIntent);
+                showLoginScreen(exportIntent);
                 return true;
         }
         return true;
