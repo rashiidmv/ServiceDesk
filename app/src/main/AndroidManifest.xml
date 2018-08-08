@@ -84,7 +84,13 @@
         <activity
             android:name=".DataExportImport.Export"
             android:label="@string/title_activity_export"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".HomeListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="wds.servicedesk.HomeListActivity" />
+        </activity>
     </application>
 
 </manifest>

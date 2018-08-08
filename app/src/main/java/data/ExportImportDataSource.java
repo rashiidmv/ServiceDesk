@@ -12,9 +12,11 @@ import java.util.List;
 
 public class ExportImportDataSource {
     private SQLiteDatabase database;
+
     public ExportImportDataSource() {
         database = ServiceDeskDataSource.GetDbAccess().open();
     }
+
     public List<String> GetTableNames() {
         List<String> tableNames = new ArrayList<String>();
         Cursor result = database.rawQuery("\n" +
@@ -29,7 +31,7 @@ public class ExportImportDataSource {
 
     public JSONArray getResults(String tableName) {
 
-        String searchQuery = "SELECT  * FROM "+tableName;
+        String searchQuery = "SELECT  * FROM " + tableName;
         Cursor cursor = database.rawQuery(searchQuery, null);
 
         JSONArray resultSet = new JSONArray();
