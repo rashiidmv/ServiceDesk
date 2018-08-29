@@ -1,7 +1,9 @@
 package wds.servicedesk.DataExportImport;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,10 +18,13 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.sql.Date;
 import java.util.Calendar;
@@ -28,6 +33,8 @@ import java.util.List;
 import data.ExportImportDataSource;
 import data.LocationDataSource;
 import wds.servicedesk.R;
+
+import static android.app.Activity.RESULT_OK;
 
 public class Export extends AppCompatActivity {
     private ExportImportDataSource exportImportDataSource;
@@ -66,15 +73,46 @@ public class Export extends AppCompatActivity {
     }
 
     public void ExportAll(View view) {
-
-
         new Task().execute();
+    }
+
+    public void Import(View view) {
+        Intent intent = new Intent()
+                .setType("*/*")
+                .setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null)
+            return;
+        switch (requestCode) {
+            case 123:
+                if (resultCode == RESULT_OK) {
+                    String filePath = data.getData().getPath();
+                    String fileName = data.getData().getLastPathSegment();
+                    File f = new File(filePath);
+                    StringBuilder wholeData = new StringBuilder();
+                    try {
+                        BufferedReader br = new BufferedReader(new FileReader(filePath));
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            wholeData.append(line);
+                        }
+                        br.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
     }
 
     @Override
     public void onBackPressed() {
         finish();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -107,7 +145,7 @@ public class Export extends AppCompatActivity {
                 tableNames = exportImportDataSource.GetTableNames();
 
                 try {
-                    File storageDir = new File(Environment.getExternalStorageDirectory(), "ServiceDesk-"+ Calendar.getInstance().getTime().toString());
+                    File storageDir = new File(Environment.getExternalStorageDirectory(), "ServiceDesk-" + Calendar.getInstance().getTime().toString());
                     if (!storageDir.exists()) {
                         if (!storageDir.mkdirs()) {
                             Log.d("App", "failed to create directory");
