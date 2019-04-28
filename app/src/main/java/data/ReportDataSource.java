@@ -86,14 +86,17 @@ public class ReportDataSource {
                     {
                         ReportItems reportItems=items.get(brand);
                         reportItems.itemCount=reportItems.itemCount+quantity;
-                        reportItems.itemAmount=reportItems.itemAmount+amount;
+                        reportItems.itemAmount=reportItems.itemAmount+(amount*quantity);
+                        reportItems.numberOfOrders=reportItems.numberOfOrders+1;
                     }
                     else
                     {
                         ReportItems reportItems =new ReportItems();
+                        reportItems.numberOfOrders=1;
                         reportItems.brandName=brand;
-                        reportItems.itemAmount=amount;
+                        reportItems.itemAmount=amount*quantity;
                         reportItems.itemCount=quantity;
+                        reportItems.unitPrice=amount;
                         items.put(brand,reportItems);
                     }
 
@@ -104,11 +107,32 @@ public class ReportDataSource {
         result.close();
         return items;
     }
+
+    public int GetDepositeAmount(String date) {
+        Cursor result = database.rawQuery("select * from customer_details where deposite_amount!=0;", null);
+        int depositeAmount = 0;
+        if (result.getCount() > 0) {
+            String day = Utility.GetDayPart(date);
+            while (result.moveToNext()) {
+                String tempDay = Utility.GetDayPart(result.getString(result.getColumnIndex("deposite_given_date")));
+                if (day.equals(tempDay))
+                {
+                    int amount=result.getInt(result.getColumnIndex("deposite_amount"));
+                    depositeAmount=depositeAmount+amount;
+                }
+            }
+        }
+        result.close();
+        return depositeAmount;
+    }
+
     public  class ReportItems
     {
         public String brandName;
         public int itemCount;
         public int itemAmount;
+        public int unitPrice;
+        public int numberOfOrders;
     }
     public int GetTotalPendingOrders(String date) {
         Cursor result = database.rawQuery("select * from order_details where order_status='Ordered';", null);

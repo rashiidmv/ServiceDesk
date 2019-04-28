@@ -42,16 +42,24 @@ public class TodaysReport extends AppCompatActivity {
         if (tab2 != null && tab2.todaysTotalAmount != null) {
             int totalAmount = 0;
             Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            Dictionary<String, ReportDataSource.ReportItems> allItems = reportDataSource.GetTotalAmount(calendar.getTime().toString());
+            String today=calendar.getTime().toString();
+            Dictionary<String, ReportDataSource.ReportItems> allItems = reportDataSource.GetTotalAmount(today);
+            int depositeAmount = reportDataSource.GetDepositeAmount(today);
             Enumeration<ReportDataSource.ReportItems> items = allItems.elements();
             while (items.hasMoreElements()) {
                 TextView t = new TextView(view.getContext());
                 t.setGravity(Gravity.CENTER_HORIZONTAL);
                 ReportDataSource.ReportItems item = items.nextElement();
-                t.setText(item.brandName + " = " + item.itemCount + " X " + item.itemAmount);
+                t.setText(item.brandName + " = " + item.itemCount + " X " + item.unitPrice+" ="+item.itemCount*item.unitPrice+"/-  Orders="+item.numberOfOrders);
                 totalAmount = totalAmount + item.itemAmount;
                 tab2.allItems.addView(t);
             }
+            TextView t = new TextView(view.getContext());
+            t.setGravity(Gravity.CENTER_HORIZONTAL);
+            t.setTextSize(20);
+            t.setText("Deposite Amount ="+depositeAmount);
+            tab2.allItems.addView(t);
+
             tab2.todaysTotalAmount.setText("Total Amount = " + totalAmount);
             tab2.btnGetTodaysTotalAmount.setEnabled(false);
         }

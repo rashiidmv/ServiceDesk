@@ -32,6 +32,8 @@ public class CustomerDataSource {
         c.put("name", customer.name);
         c.put("maximum_cane", customer.cane);
         c.put("brand_name", customer.brand);
+        c.put("deposite_amount",0);
+        c.put("deposite_given_date","Not given deposite yet.");
         long result = database.insert("customer_details", null, c);
         return result;
     }
@@ -42,6 +44,18 @@ public class CustomerDataSource {
         c.put("name", customer.name);
         c.put("maximum_cane", customer.cane);
         c.put("brand_name", customer.brand);
+        int result = database.update("customer_details", c, "_id='" + customer.id + "'", null);
+        if (result > 0)
+            status = true;
+        return status;
+    }
+
+    public boolean UpdateDeposite(Customer customer) {
+        boolean status = false;
+        ContentValues c = new ContentValues();
+        c.put("deposite_amount", customer.depositeAmount);
+        Calendar calendar = Calendar.getInstance();
+        c.put("deposite_given_date", calendar.getTime().toString());
         int result = database.update("customer_details", c, "_id='" + customer.id + "'", null);
         if (result > 0)
             status = true;
@@ -60,6 +74,7 @@ public class CustomerDataSource {
         public String main;
         public String landmark;
         public String brand;
+        public String depositeAmount;
         public String[] mobiles = new String[3];
         public String location;
 
@@ -436,5 +451,17 @@ public class CustomerDataSource {
         if (result > 0)
             status = true;
         return status;
+    }
+
+    public int GetDepositeAmount(String customerId) {
+        String query = "select deposite_amount from customer_details where _id='" + customerId + "';";
+        Cursor c = database.rawQuery(query, null);
+        int amount = 0;
+        while (c.moveToNext()) {
+            amount = c.getInt(c.getColumnIndex("deposite_amount"));
+            break;
+        }
+        c.close();
+        return amount;
     }
 }

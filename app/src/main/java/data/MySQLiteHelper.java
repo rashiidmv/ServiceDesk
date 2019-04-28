@@ -7,11 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.Calendar;
+
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     //Database name and versoin
     private static final String DATABASE_NAME = "ServiceManager.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //BrandName table creation
     public static final String TABLE_Login = "login_details";
@@ -49,11 +51,15 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CustomerName = "name";
     public static final String COLUMN_NumberOfCanes = "maximum_cane";
     public static final String COLUMN_PreferedBrand = "brand_name";
+    public static final String COLUMN_DepositeAmount="deposite_amount";
+    public static final String COLUMN_DepositeGivenDate = "deposite_given_date";
     private static final String CREATE_TABLE_CustomerDetails = "create table "
             + TABLE_CustomerDetails + "( " + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_CustomerName
             + " text not null, " + COLUMN_NumberOfCanes
-            + " integer not null, " + COLUMN_PreferedBrand
+            + " integer not null, " + COLUMN_DepositeAmount
+            + " integer not null, " + COLUMN_DepositeGivenDate
+            + " text, " + COLUMN_PreferedBrand
             + " text not null,"
             + " FOREIGN KEY(brand_name) REFERENCES product_details(name));";
 
@@ -195,12 +201,18 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         ContentValues customer_details = new ContentValues();
         customer_details.put("name", "Rashid");
         customer_details.put("maximum_cane", 2);
+        customer_details.put("deposite_amount",150);
+        Calendar calendar = Calendar.getInstance();
+        customer_details.put("deposite_given_date", calendar.getTime().toString());
+
         customer_details.put("brand_name", "Bisleri");
         database.insert("customer_details", null, customer_details);
 
         customer_details = new ContentValues();
         customer_details.put("name", "Hiba");
         customer_details.put("maximum_cane", 1);
+        customer_details.put("deposite_amount",200);
+        customer_details.put("deposite_given_date", calendar.getTime().toString());
         customer_details.put("brand_name", "Aquafina");
         database.insert("customer_details", null, customer_details);
 
@@ -227,7 +239,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         ContentValues address_details = new ContentValues();
         address_details.put("customer_id", 1);
-        address_details.put("building_number", "253");
+        address_details.put("building_number", "223");
         address_details.put("house_name", "Chikkanna Home");
         address_details.put("floor_number", 21);
         address_details.put("door_number", "100");
@@ -239,7 +251,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         address_details = new ContentValues();
         address_details.put("customer_id", 2);
-        address_details.put("building_number", "253");
+        address_details.put("building_number", "223");
         address_details.put("house_name", "Chikkanna Home");
         address_details.put("floor_number", 24);
         address_details.put("door_number", "100");

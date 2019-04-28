@@ -297,7 +297,7 @@ public class HomeListActivity extends AppCompatActivity {
                     break;
                 case ORDERDETAILS:
                     ViewHolderOrderDetails viewHolderOrderDetails = (ViewHolderOrderDetails) holder;
-                    CustomerDataSource.Details current = (CustomerDataSource.Details) mValues.get(position);
+                    final CustomerDataSource.Details current = (CustomerDataSource.Details) mValues.get(position);
                     viewHolderOrderDetails.mItem = current;
                     viewHolderOrderDetails.custmerNameView.setText(current.customerName);
                     viewHolderOrderDetails.mobileView.setText(current.mobile);
@@ -371,25 +371,32 @@ public class HomeListActivity extends AppCompatActivity {
                     viewHolderOrderDetails.btnDelivered.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            AlertDialog.Builder dlgAlert = new AlertDialog.Builder(v.getContext());
-                            dlgAlert.setMessage("Order Delivered?");
-                            dlgAlert.setTitle("Servie Desk");
-                            dlgAlert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    CustomerDataSource.Details temp = (CustomerDataSource.Details) mValues.get(position);
-                                    if (temp.orderId == 0)
-                                        temp.orderId = datasource.GetOrderId(temp.mobile, temp.orderStatus);
-                                    temp.orderStatus = "Delivered";
-                                    datasource.UpdateOrderStatus(temp.orderStatus, temp.orderId);
-                                    mValues.remove(position);
-                                    notifyItemRemoved(position);
-                                    notifyItemRangeChanged(position, mValues.size());
-                                    d.swap();
-                                }
-                            });
-                            dlgAlert.setNegativeButton("No", null);
-                            dlgAlert.setCancelable(true);
-                            dlgAlert.create().show();
+                            CustomerDataSource.Details temp = (CustomerDataSource.Details) mValues.get(position);
+                            int amount=datasource.GetDepositeAmount(temp.customerId);
+                            if(amount == 0 ) {
+                                depositeScreen(temp.customerId);
+                            }
+                            else {
+                                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(v.getContext());
+                                dlgAlert.setMessage("Order Delivered?");
+                                dlgAlert.setTitle("Servie Desk");
+                                dlgAlert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        CustomerDataSource.Details temp = (CustomerDataSource.Details) mValues.get(position);
+                                        if (temp.orderId == 0)
+                                            temp.orderId = datasource.GetOrderId(temp.mobile, temp.orderStatus);
+                                        temp.orderStatus = "Delivered";
+                                        datasource.UpdateOrderStatus(temp.orderStatus, temp.orderId);
+                                        mValues.remove(position);
+                                        notifyItemRemoved(position);
+                                        notifyItemRangeChanged(position, mValues.size());
+                                        d.swap();
+                                    }
+                                });
+                                dlgAlert.setNegativeButton("No", null);
+                                dlgAlert.setCancelable(true);
+                                dlgAlert.create().show();
+                            }
                         }
                     });
                     break;
@@ -745,4 +752,62 @@ public class HomeListActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void depositeScreen(final String customerId) {
+        final AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+        final EditText txtDepositeAmount = new EditText(this);
+        txtDepositeAmount.setHint("Deposite Amount Only");
+        txtDepositeAmount.setInputType(InputType.TYPE_CLASS_NUMBER);
+        final AlertDialog dialog = dlgAlert.create();
+        Button btnSave = new Button(this);
+        btnSave.setBackgroundResource(R.drawable.curved_button_shape);
+        btnSave.setText("Save");
+        btnSave.setWidth(94);
+        btnSave.setHeight(34);
+        btnSave.setTextColor(getResources().getColor(R.color.white));
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                CustomerDataSource.Customer customer=new CustomerDataSource.Customer();
+                customer.id=customerId;
+                customer.depositeAmount=txtDepositeAmount.getText().toString().trim();
+                if(datasource.UpdateDeposite(customer)) {
+                    Toast.makeText(v.getContext(), "Deposite Amount Saved, \nPlease click on 'Delivered' to mark delivery successfull", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(v.getContext(), "Deposite Amount Update Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        Button btnCancel = new Button(this);
+        btnCancel.setBackgroundResource(R.drawable.curved_button_shape);
+        btnCancel.setText("Cancel");
+        btnCancel.setWidth(94);
+        btnCancel.setHeight(34);
+        btnCancel.setTextColor(getResources().getColor(R.color.white));
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnCancel.layout(2, 0, 0, 0);
+        LinearLayout btnLayout = new LinearLayout(this);
+        btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+        btnLayout.addView(btnSave);
+        btnLayout.addView(btnCancel);
+
+
+        LinearLayout mainLayout = new LinearLayout(this);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainLayout.setGravity(View.TEXT_ALIGNMENT_CENTER);
+        mainLayout.addView(txtDepositeAmount);
+        mainLayout.addView(btnLayout);
+
+        dialog.setView(mainLayout);
+        dialog.setTitle("Servie Desk");
+        dialog.setCancelable(true);
+        dialog.show();
+    }
 }
