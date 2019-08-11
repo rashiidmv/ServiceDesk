@@ -152,7 +152,8 @@ public class CustomerDataSource {
 
     public List<Customer> GetCustomers() {
         List<Customer> customers = new ArrayList<Customer>();
-        String query = "select _id, name,maximum_cane, brand_name, building_number, house_name, floor_number, door_number, cross_number,main_number, landmark, location_name from customer_details INNER JOIN address_details ON customer_details._id = address_details.customer_id;";
+        String query = "select _id, name,maximum_cane, brand_name,deposite_amount,deposite_given_date," +
+                " building_number, house_name, floor_number, door_number, cross_number,main_number, landmark, location_name from customer_details INNER JOIN address_details ON customer_details._id = address_details.customer_id;";
         Cursor cursor = database.rawQuery(query, null);
         while (cursor.moveToNext()) {
             Customer d = new Customer();
@@ -168,6 +169,7 @@ public class CustomerDataSource {
             d.main = cursor.getString(cursor.getColumnIndex("main_number"));
             d.location = cursor.getString(cursor.getColumnIndex("location_name"));
             d.landmark = cursor.getString(cursor.getColumnIndex("landmark"));
+            d.depositeAmount = cursor.getString(cursor.getColumnIndex("deposite_amount"));
 
             customers.add(d);
         }

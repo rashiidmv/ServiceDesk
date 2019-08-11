@@ -238,6 +238,29 @@
                 android:textSize="14dp"
 />
         </LinearLayout>
+        <LinearLayout
+            android:paddingLeft="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:text="Deposite Amount: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="10dp"
+                />
+            <TextView
+                android:id="@+id/showDeposite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="@color/colorAccent"
+                android:textSize="14dp"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

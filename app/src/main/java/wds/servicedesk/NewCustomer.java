@@ -548,6 +548,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.customer_list_items, parent, false);
 
+            TextView showDeposite = (TextView) rowView.findViewById(R.id.showDeposite);
             TextView showMobile = (TextView) rowView.findViewById(R.id.showMobile);
             TextView showCustomername = (TextView) rowView.findViewById(R.id.showCustomername);
             TextView showBuildingnumber = (TextView) rowView.findViewById(R.id.showBuildingnumber);
@@ -570,6 +571,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
             if (values.get(position).mobiles[2] != null && !values.get(position).mobiles[2].equals(""))
                 mobiles = mobiles + ", " + values.get(position).mobiles[2];
             showMobile.setText(mobiles);
+            showDeposite.setText(values.get(position).depositeAmount);
 
             showCustomername.setText(values.get(position).name);
             if (values.get(position).buildingNumber != null && !values.get(position).buildingNumber.equals(""))
