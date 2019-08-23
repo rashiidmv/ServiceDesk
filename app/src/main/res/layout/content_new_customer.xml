@@ -145,7 +145,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+            <CheckBox
+                android:id="@+id/placeorder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Place Order" />
             <Spinner
                 android:nextFocusForward="@+id/addlandmark"
                 android:textColor="@color/colorAccent"
@@ -162,7 +166,6 @@
                 android:hint="Landmark"
                 android:inputType="textCapWords"
                 android:maxLines="1" />
-
         </LinearLayout>
 
         <LinearLayout

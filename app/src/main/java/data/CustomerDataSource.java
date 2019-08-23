@@ -33,6 +33,9 @@ public class CustomerDataSource {
         c.put("maximum_cane", customer.cane);
         c.put("brand_name", customer.brand);
         c.put("deposite_amount",0);
+        c.put("latitude",0.0);
+        c.put("longitude",0.0);
+
         c.put("deposite_given_date","Not given deposite yet.");
         long result = database.insert("customer_details", null, c);
         return result;
@@ -50,12 +53,14 @@ public class CustomerDataSource {
         return status;
     }
 
-    public boolean UpdateDeposite(Customer customer) {
+    public boolean UpdateDepositeAndLocation(Customer customer) {
         boolean status = false;
         ContentValues c = new ContentValues();
         c.put("deposite_amount", customer.depositeAmount);
         Calendar calendar = Calendar.getInstance();
         c.put("deposite_given_date", calendar.getTime().toString());
+        c.put("latitude",customer.latitude);
+        c.put("longitude",customer.longitude);
         int result = database.update("customer_details", c, "_id='" + customer.id + "'", null);
         if (result > 0)
             status = true;
@@ -77,6 +82,9 @@ public class CustomerDataSource {
         public String depositeAmount;
         public String[] mobiles = new String[3];
         public String location;
+
+        public double latitude;
+        public double longitude;
 
         public String getName() {
             return name;
@@ -106,7 +114,7 @@ public class CustomerDataSource {
 
     public List<Object> GetDetails() {
         detailsList = new ArrayList<>();
-        String query = "select order_details.customer_id, mobile, quantity, customer_details.brand_name, order_details._id, order_status, expected_date_time, building_number, house_name, floor_number, door_number, cross_number, main_number, landmark, location_name, name, product_details.unit_price from order_details  INNER JOIN address_details ON order_details.customer_id = address_details.customer_id INNER JOIN customer_details ON order_details.customer_id=customer_details._id INNER JOIN product_details ON product_details.product_name=customer_details.brand_name;";
+        String query = "select order_details.customer_id, mobile, quantity, customer_details.brand_name,customer_details.latitude,customer_details.longitude, order_details._id, order_status, expected_date_time, building_number, house_name, floor_number, door_number, cross_number, main_number, landmark, location_name, name, product_details.unit_price from order_details  INNER JOIN address_details ON order_details.customer_id = address_details.customer_id INNER JOIN customer_details ON order_details.customer_id=customer_details._id INNER JOIN product_details ON product_details.product_name=customer_details.brand_name;";
         Cursor cursor = database.rawQuery(query, null);
         while (cursor.moveToNext()) {
             if (cursor.getString(cursor.getColumnIndex("order_status")).equals("Ordered")) {
@@ -134,6 +142,8 @@ public class CustomerDataSource {
                 d.location = cursor.getString(cursor.getColumnIndex("location_name"));
                 String temp = cursor.getString(cursor.getColumnIndex("expected_date_time"));
                 d.expectedDateTime = Utility.GetTimePart(temp);
+                d.latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
+                d.longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
                 detailsList.add(d);
             }
         }
@@ -152,7 +162,7 @@ public class CustomerDataSource {
 
     public List<Customer> GetCustomers() {
         List<Customer> customers = new ArrayList<Customer>();
-        String query = "select _id, name,maximum_cane, brand_name,deposite_amount,deposite_given_date," +
+        String query = "select _id, name,maximum_cane, brand_name,deposite_amount,deposite_given_date,latitude,longitude," +
                 " building_number, house_name, floor_number, door_number, cross_number,main_number, landmark, location_name from customer_details INNER JOIN address_details ON customer_details._id = address_details.customer_id;";
         Cursor cursor = database.rawQuery(query, null);
         while (cursor.moveToNext()) {
@@ -170,6 +180,8 @@ public class CustomerDataSource {
             d.location = cursor.getString(cursor.getColumnIndex("location_name"));
             d.landmark = cursor.getString(cursor.getColumnIndex("landmark"));
             d.depositeAmount = cursor.getString(cursor.getColumnIndex("deposite_amount"));
+            d.latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
+            d.longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
 
             customers.add(d);
         }
@@ -224,6 +236,8 @@ public class CustomerDataSource {
                 d.customerName = c.getString(c.getColumnIndex("name"));
                 d.brand = c.getString(c.getColumnIndex("brand_name"));
                 d.quantity = c.getInt(c.getColumnIndex("maximum_cane"));
+                d.latitude = c.getDouble(c.getColumnIndex("latitude"));
+                d.longitude = c.getDouble(c.getColumnIndex("longitude"));
             }
             c.close();
 
@@ -317,6 +331,8 @@ public class CustomerDataSource {
         public long orderId;
         public String landmark;
         public String location;
+        public double latitude;
+        public double longitude;
 
 
         public Details() {
@@ -333,7 +349,7 @@ public class CustomerDataSource {
                        String paymentMode,
                        int unitPrice,
                        int orderId,
-                       String landmark, String location) {
+                       String landmark, String location,double latitude, double longitude) {
             this.customerId = customerId;
             this.customerName = customerName;
             this.doorNumber = doorNumber;
@@ -355,6 +371,8 @@ public class CustomerDataSource {
             this.orderId = orderId;
             this.landmark = landmark;
             this.location = location;
+            this.latitude=latitude;
+            this.longitude=longitude;
 
         }
 
@@ -375,7 +393,8 @@ public class CustomerDataSource {
             return customerName;
         }
 
-
+        public double getLatitude() { return  latitude;}
+        public double getLongitude() { return  longitude;}
     }
 
     public static class NewCustomerDettails {

@@ -1,5 +1,6 @@
 package wds.servicedesk;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -7,9 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -29,18 +34,28 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.lang.reflect.Method;
+import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import data.CustomerDataSource;
 import data.LoginDataSource;
 import data.MobileDataSource;
 import data.ServiceDeskDataSource;
 import wds.servicedesk.DataExportImport.Export;
 import wds.servicedesk.reports.TodaysReport;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /**
  * An activity representing a list of Home. This activity
@@ -60,7 +75,7 @@ public class HomeListActivity extends AppCompatActivity {
     static final int REGISTER_CUSTOMER_FROM_DESK = 1;
     private List<Object> allItems;
     private boolean IsSeachViewClosed = true;
-
+    private FusedLocationProviderClient locationClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,8 +102,11 @@ public class HomeListActivity extends AppCompatActivity {
         if (findViewById(R.id.home_detail_container) != null) {
             mTwoPane = true;
         }
+        requestPermission();
     }
-
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this,new String[] {ACCESS_FINE_LOCATION},1);
+    }
     public void floatingActionNewCustomerClick(View view) {
         //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //          .setAction("Action", null).show();
@@ -399,6 +417,31 @@ public class HomeListActivity extends AppCompatActivity {
                             }
                         }
                     });
+
+                    viewHolderOrderDetails.btnShowLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final CustomerDataSource.Details temp = (CustomerDataSource.Details) mValues.get(position);
+                            locationClient= LocationServices.getFusedLocationProviderClient(HomeListActivity.this);
+                            if(ActivityCompat.checkSelfPermission(HomeListActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                return;
+                            }
+                            //locationClient.flushLocations();
+                            locationClient.getLastLocation().addOnSuccessListener(HomeListActivity.this, new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    if(location !=null) {
+                                        String uri = "http://maps.google.com/maps?saddr=" + location.getLatitude() + "," + location.getLongitude() +
+                                                "&daddr=" + temp.getLatitude() + "," + temp.getLongitude();
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                        intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
+                        }
+                    });
+
                     break;
             }
         }
@@ -433,6 +476,7 @@ public class HomeListActivity extends AppCompatActivity {
 
             public final Button btnCancelOrder;
             public final Button btnDelivered;
+            public final Button btnShowLocation;
 //            public final Button btnRegisterNewCustomer;
 //            public final Button btnRemoveNewCustomer;
 
@@ -464,6 +508,7 @@ public class HomeListActivity extends AppCompatActivity {
                 locationView = (TextView) view.findViewById(R.id.location);
                 btnCancelOrder = (Button) view.findViewById(R.id.btncancel);
                 btnDelivered = (Button) view.findViewById(R.id.btnDelivered);
+                btnShowLocation = (Button) view.findViewById(R.id.btnShowLocation);
 //                btnRegisterNewCustomer = (Button) view.findViewById(R.id.btnRegisterNewCustomer);
 //                btnRemoveNewCustomer = (Button) view.findViewById(R.id.btnRemoveNewCustomer);
             }
@@ -768,15 +813,30 @@ public class HomeListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                CustomerDataSource.Customer customer=new CustomerDataSource.Customer();
+                final CustomerDataSource.Customer customer=new CustomerDataSource.Customer();
                 customer.id=customerId;
                 customer.depositeAmount=txtDepositeAmount.getText().toString().trim();
-                if(datasource.UpdateDeposite(customer)) {
-                    Toast.makeText(v.getContext(), "Deposite Amount Saved, \nPlease click on 'Delivered' to mark delivery successfull", Toast.LENGTH_SHORT).show();
+
+                //set location
+                locationClient= LocationServices.getFusedLocationProviderClient(HomeListActivity.this);
+                if(ActivityCompat.checkSelfPermission(HomeListActivity.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
-                else {
-                    Toast.makeText(v.getContext(), "Deposite Amount Update Failed", Toast.LENGTH_SHORT).show();
-                }
+                locationClient.getLastLocation().addOnSuccessListener(HomeListActivity.this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if(location !=null) {
+                            customer.latitude =location.getLatitude();
+                            customer.longitude =location.getLongitude();
+                        }
+                        if(datasource.UpdateDepositeAndLocation(customer)) {
+                            Toast.makeText(getApplicationContext(), "Deposite Amount Saved, \nPlease click on 'Delivered' to mark delivery successfull", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(), "Deposite Amount Update Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
         Button btnCancel = new Button(this);

@@ -322,6 +322,19 @@
             android:text="Delivered"
             android:textColor="#ffffff"
             android:textSize="14dp" />
+        <Button
+            android:id="@+id/btnShowLocation"
+            android:layout_width="94dp"
+            android:drawableStart="@android:drawable/ic_dialog_map"
+            android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
+            android:shadowColor="#A8A8A8"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="0"
+            android:text="Go"
+            android:textColor="#ffffff"
+            android:textSize="14dp" />
 
     </LinearLayout>
 </LinearLayout>

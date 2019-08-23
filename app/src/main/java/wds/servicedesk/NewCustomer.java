@@ -5,9 +5,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -21,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,8 +34,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import data.AddressDataSource;
 import data.BrandNameDataSource;
@@ -38,6 +48,8 @@ import data.CustomerDataSource;
 import data.LocationDataSource;
 import data.MobileDataSource;
 import data.ServiceDeskDataSource;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class NewCustomer extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -71,6 +83,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
     private EditText addmobilenumber1;
     private EditText addmobilenumber2;
     private EditText addmobilenumber3;
+    private CheckBox addPlaceOrder;
     private Bundle bundle;
 
     private List<CustomerDataSource.Customer> allCustomers;
@@ -78,6 +91,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
     boolean IsUpdate = false;
     ListView showCustomersListview;
     CustomerListAdapter customerListAdapter;
+    private FusedLocationProviderClient locationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +117,8 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
         addmobilenumber1 = (EditText) findViewById(R.id.addmobilenumber1);
         addmobilenumber2 = (EditText) findViewById(R.id.addmobilenumber2);
         addmobilenumber3 = (EditText) findViewById(R.id.addmobilenumber3);
+        addPlaceOrder = (CheckBox) findViewById(R.id.placeorder);
+
 
         bundle = getIntent().getExtras();
         if (bundle != null && bundle.containsKey("mobile")) {
@@ -165,8 +181,11 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
         customerListAdapter = new CustomerListAdapter(this,customerDataSource.GetCustomers());
         showCustomersListview = (ListView) findViewById(R.id.show_customers_listview);
         showCustomersListview.setAdapter(customerListAdapter);
+        requestPermission();
     }
-
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this,new String[] {ACCESS_FINE_LOCATION},1);
+    }
     @Override
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
@@ -204,6 +223,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
     String mobile2;
     String mobile3;
     String location;
+    Boolean placeOrder;
 
     private void TempData() {
         customerName = addcustomername.getText().toString();
@@ -220,6 +240,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
         mobile2 = addmobilenumber2.getText().toString();
         mobile3 = addmobilenumber3.getText().toString();
         location = spinnerLocations.getSelectedItem().toString();
+        placeOrder = addPlaceOrder.isChecked();
     }
 
     @Override
@@ -417,6 +438,9 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
                     dlgAlert.setPositiveButton("OK", null);
                     dlgAlert.setMessage("Customer Updated Successfully !");
                 }
+                if(placeOrder) {
+                    customerDataSource.PrepareOrderDetails(mobile1,false);
+                }
                 if (success) {
                     ClearFields();
                     addmobilenumber1.requestFocus();
@@ -564,6 +588,7 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
 
             Button delete = (Button) rowView.findViewById(R.id.btnDeleteCustomer);
             Button edit = (Button) rowView.findViewById(R.id.btnEditCustomer);
+            Button goToCustomer = (Button) rowView.findViewById(R.id.goToCustomer);
 
             String mobiles = values.get(position).mobiles[0];
             if (values.get(position).mobiles[1] != null && !values.get(position).mobiles[1].equals(""))
@@ -643,8 +668,30 @@ public class NewCustomer extends AppCompatActivity implements AdapterView.OnItem
                     //    addproductname.setEnabled(false);
                 }
             });
+            goToCustomer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    currentCustomer = values.get(position);
+                   // locationClient.flushLocations();
+                    locationClient= LocationServices.getFusedLocationProviderClient(NewCustomer.this);
+                    if(ActivityCompat.checkSelfPermission(NewCustomer.this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    locationClient.getLastLocation().addOnSuccessListener(NewCustomer.this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if(location !=null) {
+                                String uri = "http://maps.google.com/maps?saddr=" + location.getLatitude() + "," + location.getLongitude() +
+                                        "&daddr=" + currentCustomer.latitude + "," + currentCustomer.longitude;
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                                intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                }
+            });
             return rowView;
         }
     }
-
 }

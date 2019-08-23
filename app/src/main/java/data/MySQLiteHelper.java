@@ -53,12 +53,17 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PreferedBrand = "brand_name";
     public static final String COLUMN_DepositeAmount="deposite_amount";
     public static final String COLUMN_DepositeGivenDate = "deposite_given_date";
+    public static final String COLUMN_Latitude = "latitude";
+    public static final String COLUMN_Longitude = "longitude";
+
     private static final String CREATE_TABLE_CustomerDetails = "create table "
             + TABLE_CustomerDetails + "( " + COLUMN_ID
             + " integer primary key autoincrement, " + COLUMN_CustomerName
             + " text not null, " + COLUMN_NumberOfCanes
             + " integer not null, " + COLUMN_DepositeAmount
             + " integer not null, " + COLUMN_DepositeGivenDate
+            + " double not null, " + COLUMN_Latitude
+            + " double not null, " + COLUMN_Longitude
             + " text, " + COLUMN_PreferedBrand
             + " text not null,"
             + " FOREIGN KEY(brand_name) REFERENCES product_details(name));";
@@ -188,85 +193,83 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     private void FillDummyData(SQLiteDatabase database) {
 
-        ContentValues product_details = new ContentValues();
-        product_details.put("product_name", "Bisleri");
-        product_details.put("unit_price", "50");
-        database.insert("product_details", null, product_details);
-
-        product_details = new ContentValues();
-        product_details.put("product_name", "Aquafina");
-        product_details.put("unit_price", 30);
-        database.insert("product_details", null, product_details);
-
-        ContentValues customer_details = new ContentValues();
-        customer_details.put("name", "Rashid");
-        customer_details.put("maximum_cane", 2);
-        customer_details.put("deposite_amount",150);
-        Calendar calendar = Calendar.getInstance();
-        customer_details.put("deposite_given_date", calendar.getTime().toString());
-
-        customer_details.put("brand_name", "Bisleri");
-        database.insert("customer_details", null, customer_details);
-
-        customer_details = new ContentValues();
-        customer_details.put("name", "Hiba");
-        customer_details.put("maximum_cane", 1);
-        customer_details.put("deposite_amount",200);
-        customer_details.put("deposite_given_date", calendar.getTime().toString());
-        customer_details.put("brand_name", "Aquafina");
-        database.insert("customer_details", null, customer_details);
-
-
-        ContentValues mobile_numbers = new ContentValues();
-        mobile_numbers.put("customer_id", 1);
-        mobile_numbers.put("mobile", "6505556789");
-        database.insert("mobile_numbers", null, mobile_numbers);
-
-        mobile_numbers = new ContentValues();
-        mobile_numbers.put("customer_id", 1);
-        mobile_numbers.put("mobile", "9620370920");
-        database.insert("mobile_numbers", null, mobile_numbers);
-
-        mobile_numbers = new ContentValues();
-        mobile_numbers.put("customer_id", 2);
-        mobile_numbers.put("mobile", "9539842025");
-        database.insert("mobile_numbers", null, mobile_numbers);
-
-        ContentValues location_details = new ContentValues();
-        location_details.put("_id", 1);
-        location_details.put("name", "Domlur Layout");
-        database.insert("location_details", null, location_details);
-
-        ContentValues address_details = new ContentValues();
-        address_details.put("customer_id", 1);
-        address_details.put("building_number", "223");
-        address_details.put("house_name", "Chikkanna Home");
-        address_details.put("floor_number", 21);
-        address_details.put("door_number", "100");
-        address_details.put("cross_number", "5");
-        address_details.put("main_number", "1");
-        address_details.put("landmark", "AVJ Medical store opposite");
-        address_details.put("location_name", "Domlur Layout");
-        database.insert("address_details", null, address_details);
-
-        address_details = new ContentValues();
-        address_details.put("customer_id", 2);
-        address_details.put("building_number", "223");
-        address_details.put("house_name", "Chikkanna Home");
-        address_details.put("floor_number", 24);
-        address_details.put("door_number", "100");
-        address_details.put("cross_number", "5");
-        address_details.put("main_number", "1");
-        address_details.put("landmark", "AVJ Medical store opposite");
-        address_details.put("location_name", "Domlur Layout");
-        database.insert("address_details", null, address_details);
+//        ContentValues product_details = new ContentValues();
+//        product_details.put("product_name", "Bisleri");
+//        product_details.put("unit_price", "50");
+//        database.insert("product_details", null, product_details);
+//
+//        product_details = new ContentValues();
+//        product_details.put("product_name", "Aquafina");
+//        product_details.put("unit_price", 30);
+//        database.insert("product_details", null, product_details);
+//
+//        ContentValues customer_details = new ContentValues();
+//        customer_details.put("name", "Rashid");
+//        customer_details.put("maximum_cane", 2);
+//        customer_details.put("deposite_amount",150);
+//        Calendar calendar = Calendar.getInstance();
+//        customer_details.put("deposite_given_date", calendar.getTime().toString());
+//
+//        customer_details.put("brand_name", "Bisleri");
+//        database.insert("customer_details", null, customer_details);
+//
+//        customer_details = new ContentValues();
+//        customer_details.put("name", "Hiba");
+//        customer_details.put("maximum_cane", 1);
+//        customer_details.put("deposite_amount",200);
+//        customer_details.put("deposite_given_date", calendar.getTime().toString());
+//        customer_details.put("brand_name", "Aquafina");
+//        database.insert("customer_details", null, customer_details);
+//
+//
+//        ContentValues mobile_numbers = new ContentValues();
+//        mobile_numbers.put("customer_id", 1);
+//        mobile_numbers.put("mobile", "6505556789");
+//        database.insert("mobile_numbers", null, mobile_numbers);
+//
+//        mobile_numbers = new ContentValues();
+//        mobile_numbers.put("customer_id", 1);
+//        mobile_numbers.put("mobile", "9620370920");
+//        database.insert("mobile_numbers", null, mobile_numbers);
+//
+//        mobile_numbers = new ContentValues();
+//        mobile_numbers.put("customer_id", 2);
+//        mobile_numbers.put("mobile", "9539842025");
+//        database.insert("mobile_numbers", null, mobile_numbers);
+//
+//        ContentValues location_details = new ContentValues();
+//        location_details.put("_id", 1);
+//        location_details.put("name", "Domlur Layout");
+//        database.insert("location_details", null, location_details);
+//
+//        ContentValues address_details = new ContentValues();
+//        address_details.put("customer_id", 1);
+//        address_details.put("building_number", "223");
+//        address_details.put("house_name", "Chikkanna Home");
+//        address_details.put("floor_number", 21);
+//        address_details.put("door_number", "100");
+//        address_details.put("cross_number", "5");
+//        address_details.put("main_number", "1");
+//        address_details.put("landmark", "AVJ Medical store opposite");
+//        address_details.put("location_name", "Domlur Layout");
+//        database.insert("address_details", null, address_details);
+//
+//        address_details = new ContentValues();
+//        address_details.put("customer_id", 2);
+//        address_details.put("building_number", "223");
+//        address_details.put("house_name", "Chikkanna Home");
+//        address_details.put("floor_number", 24);
+//        address_details.put("door_number", "100");
+//        address_details.put("cross_number", "5");
+//        address_details.put("main_number", "1");
+//        address_details.put("landmark", "AVJ Medical store opposite");
+//        address_details.put("location_name", "Domlur Layout");
+//        database.insert("address_details", null, address_details);
 
         ContentValues login_details=new ContentValues();
         login_details.put("username","rashid");
         login_details.put("password","rashid");
         login_details.put("usertype","admin");
         database.insert(TABLE_Login,null,login_details);
-
-
     }
 }
